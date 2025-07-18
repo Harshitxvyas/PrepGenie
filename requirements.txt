@@ -12,3 +12,8 @@ google-auth
 google-auth-oauthlib
 google-auth-httplib2
 chromedriver-autoinstaller
+streamlit
+selenium==4.15.2
+pandas
+requests
+webdriver-manager
