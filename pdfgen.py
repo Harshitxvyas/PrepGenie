@@ -1,0 +1,2 @@
+def pdfgenerator():
+    return None
