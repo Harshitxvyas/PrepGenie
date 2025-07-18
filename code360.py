@@ -27,9 +27,9 @@ def get_chrome_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    # ✅ Avoid permission error by forcing /tmp download for chromedriver
+    # ✅ Use a safe temp directory for webdriver-manager
     os.environ['WDM_LOCAL'] = '1'
-    os.environ['WDM_CACHE_DIR'] = '/tmp/wdm'
+    os.environ['WDM_CACHE_DIR'] = '/tmp/wdm'  # ✅ FIXED!
 
     driver_path = ChromeDriverManager().install()
     return webdriver.Chrome(service=Service(driver_path), options=chrome_options)
