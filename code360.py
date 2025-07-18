@@ -25,27 +25,31 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
-# Disable inotify watcher issues
+CHROMEDRIVER_PATH = "/tmp/chromedriver"
+CHROME_BINARY = shutil.which("chromium")  # Streamlit Cloud uses `chromium`
+
+# Avoid Streamlit file watcher error
 os.environ["STREAMLIT_DISABLE_WATCHDOG_WARNINGS"] = "true"
 os.environ["STREAMLIT_WATCH_MODE"] = "poll"
 
-CHROMEDRIVER_PATH = "/tmp/chromedriver"
+def download_chromedriver():
+    url = "https://storage.googleapis.com/chrome-for-testing-public/120.0.6099.224/linux64/chromedriver-linux64.zip"
+    zip_path = "/tmp/chromedriver.zip"
+    extract_path = "/tmp/chromedriver-linux64"
 
-if not os.path.exists(CHROMEDRIVER_PATH):
-    subprocess.run([
-        "wget",
-        "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.224/linux64/chromedriver-linux64.zip",
-        "-O", "/tmp/chromedriver.zip"
-    ])
-    subprocess.run(["unzip", "/tmp/chromedriver.zip", "-d", "/tmp/"])
-    subprocess.run(["chmod", "+x", "/tmp/chromedriver-linux64/chromedriver"])
-    subprocess.run(["cp", "/tmp/chromedriver-linux64/chromedriver", CHROMEDRIVER_PATH])
-
+    subprocess.run(["wget", url, "-O", zip_path], check=True)
+    subprocess.run(["unzip", "-o", zip_path, "-d", "/tmp/"], check=True)
+    final_path = os.path.join(extract_path, "chromedriver")
+    subprocess.run(["chmod", "+x", final_path], check=True)
+    shutil.copy(final_path, CHROMEDRIVER_PATH)
 
 def get_chrome_driver():
+    if not os.path.exists(CHROMEDRIVER_PATH):
+        print("⬇️ Downloading correct chromedriver...")
+        download_chromedriver()
+
     chrome_options = Options()
-    chrome_path = shutil.which("chromium")
-    chrome_options.binary_location = chrome_path
+    chrome_options.binary_location = CHROME_BINARY
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
