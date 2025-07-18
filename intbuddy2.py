@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
 from langchain.chains import ConversationalRetrievalChain
 from data_preprocessor import clean_and_structure, json_to_documents
-from code360 import main as fetch_interview_data
+from code360 import fetch_all_interviews as fetch_interview_data
 from prompt import get_prompt
 from pdfgen import pdfgenerator  # Must return BytesIO or bytes PDF
 
