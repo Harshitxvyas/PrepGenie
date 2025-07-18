@@ -47,8 +47,38 @@ def load_vectorstore(company: str, role: str, pages: int):
     vectorstore = FAISS.from_documents(docs, embeddings)
     return vectorstore, df, structured
 
-# 🎯 Page UI
-st.title("🔍 RAG Q&A Chatbot for Interview Insights")
+# 🎯 Page Title
+st.title("Intbuddy - A Rag based Interview helping Chatbot")
+
+
+with st.sidebar:
+    st.title("About IntBuddy")
+    st.markdown("""
+**What This App Does**
+
+- Scrapes recent interview experiences from platforms.
+- Best suited for roles like SDE-1, SDE-2, and SDE Intern.
+- Builds a Retrieval-Augmented Generation (RAG) chatbot that answers your queries contextually.
+
+**How to Use**
+
+1. Enter a company name and a role (e.g., Microsoft, SDE-2).
+2. Choose the number of pages to scrape.
+   - Each page contains approximately 5–6 interview experiences.
+   - More pages = more information, but longer scraping time.
+
+**Prompts You Can Ask**
+
+- Provide me summary of interview round 1
+- Give me topic-wise percentage distribution
+- What are the major mistakes to be avoided
+
+**Important Notes**
+
+- To end the session, type: `exit`, `quit`, or `bye`
+- Ask specific and clear questions for best results
+    """)
+
 
 company = st.text_input("Enter Company Name", "Microsoft")
 role = st.text_input("Enter Role", "SDE-2")
