@@ -18,6 +18,13 @@ import shutil
 import os
 
 
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+import shutil
+import os
+
 def get_chrome_driver():
     chrome_options = Options()
     chrome_path = shutil.which("chromium")
@@ -28,8 +35,15 @@ def get_chrome_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    driver_path = ChromeDriverManager().install()
+    # ✅ Set cache dir
+    os.environ['WDM_LOCAL'] = '1'
+    os.environ['WDM_CACHE_DIR'] = '/tmp/wdm'
+
+    # ✅ Force chromedriver version to match Chromium 120
+    driver_path = ChromeDriverManager(version="120.0.6099.224").install()
+
     return webdriver.Chrome(service=Service(driver_path), options=chrome_options)
+
     
 # ✅ Scrape interview links
 def fetch_interview_links(company: str, role: str, pages: int = 1):
