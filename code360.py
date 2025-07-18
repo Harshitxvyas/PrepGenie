@@ -12,16 +12,23 @@ from webdriver_manager.chrome import ChromeDriverManager
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ✅ Chromium-compatible headless driver
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
 def get_chrome_driver():
     chrome_options = Options()
+    chrome_options.binary_location = "/usr/bin/chromium-browser"  # ✅ Path used by Streamlit Cloud
     chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--remote-debugging-port=9222")
+    chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    return webdriver.Chrome(
+        service=Service("/usr/bin/chromedriver"),  # ✅ Matches Streamlit Cloud's driver path
+        options=chrome_options
+    )
 
 # ✅ Scrape interview links
 def fetch_interview_links(company: str, role: str, pages: int = 1):
