@@ -10,12 +10,13 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ✅ Headless-compatible Chrome driver for Streamlit Cloud
+# ✅ Use Chromium for headless scraping in Streamlit Cloud
 def get_streamlit_chrome_driver():
     from selenium.webdriver.chrome.options import Options
 
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new")  # Use modern headless mode
+    chrome_options.binary_location = "/usr/bin/chromium-browser"  # Important for Streamlit Cloud
+    chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
@@ -25,7 +26,7 @@ def get_streamlit_chrome_driver():
 
     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-# ✅ Step 1: Fetch all interview links after applying filters
+# ✅ Step 1: Fetch filtered interview links
 def fetch_interview_links(company_to_filter, role_to_filter, pages_to_scrape):
     print("--- Step 1: Fetching interview links ---")
     target_url = "https://www.naukri.com/code360/interview-experiences"
@@ -83,7 +84,7 @@ def fetch_interview_links(company_to_filter, role_to_filter, pages_to_scrape):
         print(f"✅ Found {len(all_results)} links.")
         return all_results
 
-# ✅ Step 2: Scrape content from individual interview URLs
+# ✅ Step 2: Scrape each interview page
 def scrape_interview_details(url):
     driver = None
     try:
@@ -93,7 +94,6 @@ def scrape_interview_details(url):
 
         parts = []
         try:
-            # Expand journey section
             try:
                 btn = driver.find_element(By.CSS_SELECTOR, "#continue-reading-ie-cta-container button")
                 driver.execute_script("arguments[0].click();", btn)
@@ -120,43 +120,12 @@ def scrape_interview_details(url):
                     parts.append("\n\n## Interview Rounds")
                     rounds_found = True
 
-                # Try to find problem links (if available)
-                links = []
-                try:
-                    problems = round_container.find_elements(By.CSS_SELECTOR, "codingninjas-interview-round-problem")
-                    for prob in problems:
-                        try:
-                            link_btn = prob.find_element(By.CSS_SELECTOR, ".try-now-solve-later-container a")
-                            original_window = driver.current_window_handle
-                            driver.execute_script("arguments[0].click();", link_btn)
-                            time.sleep(2)
-
-                            WebDriverWait(driver, 5).until(EC.number_of_windows_to_be(2))
-                            new_window = [w for w in driver.window_handles if w != original_window][0]
-                            driver.switch_to.window(new_window)
-                            time.sleep(2)
-
-                            current_url = driver.current_url
-                            links.append(current_url)
-
-                            driver.close()
-                            driver.switch_to.window(original_window)
-
-                        except Exception:
-                            links.append("null")
-                except:
-                    links.append("null")
-
-                safe_links_string = ", ".join(link for link in links if link and link != "null")
-                round_text += f"\n\n🔗 Problem Links: {safe_links_string if safe_links_string else 'null'}"
-
                 parts.append(f"\n\n### Round {round_index}\n{round_text}")
                 round_index += 1
 
             except NoSuchElementException:
                 break
 
-        # Fallback
         if not parts:
             try:
                 content = driver.find_element(By.CSS_SELECTOR, "div.blog-body-content").text.strip()
@@ -174,7 +143,7 @@ def scrape_interview_details(url):
         if driver:
             driver.quit()
 
-# ✅ Step 3: Wrapper for parallel scraping
+# ✅ Step 3: Thread wrapper
 def scrape_link_wrapper(item, company_to_filter, role_to_filter_input):
     url = item.get('url') or item.get('URL')
     title = item.get('title') or item.get('Title')
@@ -194,13 +163,11 @@ def main(company_to_filter, role_to_filter_input, pages_to_scrape):
     role_to_filter = re.sub(r'\s*-\s*', ' - ', role_to_filter_input).upper()
     pages_to_scrape = max(1, int(pages_to_scrape))
 
-    # Step 1
     links_to_process = fetch_interview_links(company_to_filter, role_to_filter, pages_to_scrape)
     if not links_to_process:
         print("❌ No links found.")
         return None
 
-    # Step 2: Parallel scraping
     print("\n--- Step 2: Scraping interview details in parallel ---")
     scraped_data = []
     with ThreadPoolExecutor(max_workers=5) as executor:
@@ -214,7 +181,6 @@ def main(company_to_filter, role_to_filter_input, pages_to_scrape):
             if result:
                 scraped_data.append(result)
 
-    # Step 3: Final DataFrame
     if scraped_data:
         print(f"\n✅ Scraped {len(scraped_data)} interviews successfully.")
         return pd.DataFrame(scraped_data)
