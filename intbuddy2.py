@@ -14,7 +14,8 @@ from pdfgen import pdfgenerator  # Must return BytesIO or bytes PDF
 os.environ["GOOGLE_API_KEY"] = "AIzaSyAfNUg3nn1UaW1uzjXypquW2RJfXreKkrU"
 
 import os
-st.write(("Driver cache directory:", os.environ['WDM_CACHE_DIR'])
+
+
 
 def debug_paths():
     chromium_path = "/usr/bin/chromium"
