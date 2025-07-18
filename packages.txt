@@ -1,3 +1,8 @@
-chromium
-unzip
 wget
+gnupg
+software-properties-common
+apt-transport-https
+ca-certificates
+unzip
+chromium-browser
+chromium-chromedriver
