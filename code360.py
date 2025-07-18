@@ -17,6 +17,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import shutil
 import os
 
+
 def get_chrome_driver():
     chrome_options = Options()
     chrome_path = shutil.which("chromium")
@@ -27,13 +28,9 @@ def get_chrome_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    # ✅ Use a safe temp directory for webdriver-manager
-    os.environ['WDM_LOCAL'] = '1'
-    os.environ['WDM_CACHE_DIR'] = '/tmp/wdm'  # ✅ FIXED!
-
     driver_path = ChromeDriverManager().install()
     return webdriver.Chrome(service=Service(driver_path), options=chrome_options)
-
+    
 # ✅ Scrape interview links
 def fetch_interview_links(company: str, role: str, pages: int = 1):
     base_url = "https://www.codingninjas.com/studio/experiences"
