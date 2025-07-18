@@ -48,7 +48,8 @@ def load_vectorstore(company: str, role: str, pages: int):
     return vectorstore, df, structured
 
 # 🎯 Page Title
-st.title("Intbuddy - A Rag based Interview helping Chatbot")
+st.title("🤖Intbuddy - A Rag based Interview preparation helper Chatbot")
+
 
 
 with st.sidebar:
@@ -69,14 +70,17 @@ with st.sidebar:
 
 **Prompts You Can Ask**
 
-- Provide me summary of interview round 1
+- Provide me brief summary of interview round 1
 - Give me topic-wise percentage distribution
-- What are the major mistakes to be avoided
+- What are the major mistakes that should be avoided during interview
+- Tips for interview rounds
+- Number of rounds
 
 **Important Notes**
 
 - To end the session, type: `exit`, `quit`, or `bye`
 - Ask specific and clear questions for best results
+- Give the long and detailed prompt for better output
     """)
 
 
@@ -84,13 +88,13 @@ company = st.text_input("Enter Company Name", "Microsoft")
 role = st.text_input("Enter Role", "SDE-2")
 pages = st.number_input("Number of Pages to Scrape", min_value=1, max_value=10, value=1)
 
-# 🧠 Session state
+#  Session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "qa_chain" not in st.session_state:
     st.session_state.qa_chain = None
 
-# 🚀 Load VectorStore + Build QA Chain
+#  Load VectorStore + Build QA Chain
 if st.button("Load & Build Chatbot"):
     with st.spinner("Working...",show_time=True):
         vs, df, structured = load_vectorstore(company, role, pages)
