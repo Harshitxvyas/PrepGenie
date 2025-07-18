@@ -1,0 +1,13 @@
+pandas
+selenium
+webdriver-manager
+streamlit
+langchain
+langchain-google-genai
+langchain-community
+faiss-cpu
+openai
+google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
