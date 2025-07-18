@@ -43,22 +43,21 @@ def download_chromedriver():
     subprocess.run(["chmod", "+x", final_path], check=True)
     shutil.copy(final_path, CHROMEDRIVER_PATH)
 
-def get_chrome_driver():
-    if not os.path.exists(CHROMEDRIVER_PATH):
-        print("⬇️ Downloading correct chromedriver...")
-        download_chromedriver()
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
+def get_chrome_driver():
     chrome_options = Options()
-    chrome_options.binary_location = CHROME_BINARY
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
+    chrome_options.binary_location = "/usr/bin/chromium"  # For Streamlit Cloud
 
-    return webdriver.Chrome(service=Service(CHROMEDRIVER_PATH), options=chrome_options)
+    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-    
 # ✅ Scrape interview links
 def fetch_interview_links(company: str, role: str, pages: int = 1):
     base_url = "https://www.codingninjas.com/studio/experiences"
