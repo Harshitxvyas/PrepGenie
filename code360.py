@@ -10,13 +10,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
-# ✅ Chromium-compatible headless driver
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.utils import ChromeType
 import shutil
 import os
 
@@ -30,13 +27,12 @@ def get_chrome_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    # ✅ Set webdriver-manager to use /tmp folder
+    # ✅ Avoid permission error by forcing /tmp download for chromedriver
     os.environ['WDM_LOCAL'] = '1'
     os.environ['WDM_CACHE_DIR'] = '/tmp/wdm'
 
     driver_path = ChromeDriverManager().install()
     return webdriver.Chrome(service=Service(driver_path), options=chrome_options)
-
 
 # ✅ Scrape interview links
 def fetch_interview_links(company: str, role: str, pages: int = 1):
