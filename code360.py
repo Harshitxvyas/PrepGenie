@@ -18,11 +18,29 @@ import shutil
 import os
 
 
+import os
+import subprocess
+import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-import shutil
-import os
+
+# Disable inotify watcher issues
+os.environ["STREAMLIT_DISABLE_WATCHDOG_WARNINGS"] = "true"
+os.environ["STREAMLIT_WATCH_MODE"] = "poll"
+
+CHROMEDRIVER_PATH = "/tmp/chromedriver"
+
+if not os.path.exists(CHROMEDRIVER_PATH):
+    subprocess.run([
+        "wget",
+        "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.224/linux64/chromedriver-linux64.zip",
+        "-O", "/tmp/chromedriver.zip"
+    ])
+    subprocess.run(["unzip", "/tmp/chromedriver.zip", "-d", "/tmp/"])
+    subprocess.run(["chmod", "+x", "/tmp/chromedriver-linux64/chromedriver"])
+    subprocess.run(["cp", "/tmp/chromedriver-linux64/chromedriver", CHROMEDRIVER_PATH])
+
 
 def get_chrome_driver():
     chrome_options = Options()
@@ -34,11 +52,7 @@ def get_chrome_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    # ✅ Use manually installed ChromeDriver
-    return webdriver.Chrome(
-        service=Service("/tmp/chromedriver"),
-        options=chrome_options
-    )
+    return webdriver.Chrome(service=Service(CHROMEDRIVER_PATH), options=chrome_options)
 
     
 # ✅ Scrape interview links
