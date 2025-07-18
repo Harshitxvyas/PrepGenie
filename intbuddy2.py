@@ -15,6 +15,13 @@ os.environ["GOOGLE_API_KEY"] = "AIzaSyAfNUg3nn1UaW1uzjXypquW2RJfXreKkrU"
 
 import os
 
+# 💣 Force overwrite any previously set WDM_CACHE_DIR
+if 'WDM_CACHE_DIR' in os.environ:
+    print("⚠️ Overwriting existing WDM_CACHE_DIR:", os.environ['WDM_CACHE_DIR'])
+
+os.environ['WDM_CACHE_DIR'] = '/tmp/wdm'
+print("✅ Final WDM_CACHE_DIR =", os.environ['WDM_CACHE_DIR'])
+
 
 
 def debug_paths():
