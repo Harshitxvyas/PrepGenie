@@ -11,7 +11,7 @@ from prompt import get_prompt
 from pdfgen import pdfgenerator  # Must return BytesIO or bytes PDF
 
 # 🔐 Setup API key
-os.environ["GOOGLE_API_KEY"] = "AIzaSyD7K9xZRyDDlQnCTCs_k0C4W0Vdz9CzN2A"
+os.environ["GOOGLE_API_KEY"] = "AIzaSyAfNUg3nn1UaW1uzjXypquW2RJfXreKkrU"
 
 # 🧠 Ensure event loop exists
 try:
@@ -23,7 +23,7 @@ except RuntimeError:
 @st.cache_resource
 def get_llm():
     return ChatGoogleGenerativeAI(
-        model="gemini-pro",
+        model="gemini-2.0-flash",
         temperature=0.3,
         max_tokens=None,
         timeout=None,
@@ -62,7 +62,7 @@ if "qa_chain" not in st.session_state:
 
 # 🚀 Load VectorStore + Build QA Chain
 if st.button("Load & Build Chatbot"):
-    with st.spinner("Working..."):
+    with st.spinner("Working...",show_time=True):
         vs, df, structured = load_vectorstore(company, role, pages)
         st.session_state.structured = structured
 
@@ -97,12 +97,12 @@ if st.session_state.qa_chain:
                 st.chat_message("assistant").write(bot_a)
 
     # 📄 PDF generation button
-    st.markdown("---")
-    if st.button("📄 Generate PDF from Interviews"):
-        if "structured" in st.session_state:
-            with st.spinner("Generating PDF..."):
-                pdf_bytes = pdfgenerator(st.session_state.structured)
-                st.success("PDF generated successfully! 📄")
-                st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name="interview_data.pdf", mime="application/pdf")
-        else:
-            st.warning("Please load and build the chatbot first.")
+    # st.markdown("---")
+    # if st.button("📄 Generate PDF from Interviews"):
+    #     if "structured" in st.session_state:
+    #         with st.spinner("Generating PDF..."):
+    #             pdf_bytes = pdfgenerator(st.session_state.structured)
+    #             st.success("PDF generated successfully! 📄")
+    #             st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name="interview_data.pdf", mime="application/pdf")
+    #     else:
+    #         st.warning("Please load and build the chatbot first.")
