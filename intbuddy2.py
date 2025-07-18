@@ -1,3 +1,6 @@
+import os
+os.environ["STREAMLIT_DISABLE_WATCHDOG_WARNINGS"] = "true"
+os.environ["STREAMLIT_WATCH_MODE"] = "poll"
 import streamlit as st
 import asyncio
 import os
