@@ -13,6 +13,17 @@ from pdfgen import pdfgenerator  # Must return BytesIO or bytes PDF
 # 🔐 Setup API key
 os.environ["GOOGLE_API_KEY"] = "AIzaSyAfNUg3nn1UaW1uzjXypquW2RJfXreKkrU"
 
+import os
+
+def debug_paths():
+    chromium_path = "/usr/bin/chromium"
+    chromedriver_path = "/usr/lib/chromium/chromedriver"
+
+    st.write("✅ chromium exists:", os.path.exists(chromium_path))
+    st.write("✅ chromedriver exists:", os.path.exists(chromedriver_path))
+
+debug_paths()
+
 # 🧠 Ensure event loop exists
 try:
     asyncio.get_running_loop()
