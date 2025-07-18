@@ -16,6 +16,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.utils import ChromeType
 import shutil
 import os
 
@@ -29,13 +30,11 @@ def get_chrome_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    # ✅ Download compatible ChromeDriver into /tmp to avoid PermissionError
-    custom_cache_path = "/tmp/.wdm"
+    # ✅ Set webdriver-manager to use /tmp folder
     os.environ['WDM_LOCAL'] = '1'
-    os.environ['WDM_CACHE_DIR'] = custom_cache_path
+    os.environ['WDM_CACHE_DIR'] = '/tmp/wdm'
 
-    driver_path = ChromeDriverManager(path=custom_cache_path).install()
-    
+    driver_path = ChromeDriverManager().install()
     return webdriver.Chrome(service=Service(driver_path), options=chrome_options)
 
 
