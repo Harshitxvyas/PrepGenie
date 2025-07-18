@@ -14,6 +14,24 @@ from pdfgen import pdfgenerator  # Must return BytesIO or bytes PDF
 os.environ["GOOGLE_API_KEY"] = "AIzaSyAfNUg3nn1UaW1uzjXypquW2RJfXreKkrU"
 
 import os
+import subprocess
+
+# Download + unzip chromedriver manually (first run only)
+CHROMEDRIVER_PATH = "/tmp/chromedriver"
+
+if not os.path.exists(CHROMEDRIVER_PATH):
+    print("⬇️ Downloading correct chromedriver...")
+    subprocess.run([
+        "wget",
+        "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.224/linux64/chromedriver-linux64.zip",
+        "-O", "/tmp/chromedriver.zip"
+    ])
+    subprocess.run(["unzip", "/tmp/chromedriver.zip", "-d", "/tmp/"])
+    subprocess.run(["chmod", "+x", "/tmp/chromedriver-linux64/chromedriver"])
+    subprocess.run(["cp", "/tmp/chromedriver-linux64/chromedriver", CHROMEDRIVER_PATH])
+
+
+import os
 
 # 💣 Force overwrite any previously set WDM_CACHE_DIR
 if 'WDM_CACHE_DIR' in os.environ:
