@@ -12,18 +12,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ✅ Chromium-compatible headless driver
-import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import shutil
+import os
 
 def get_chrome_driver():
-    # ✅ Automatically install compatible driver
-    chromedriver_autoinstaller.install()
-
     chrome_options = Options()
-    chrome_path = shutil.which("chromium")  # dynamically resolve path
+    chrome_path = shutil.which("chromium")
     chrome_options.binary_location = chrome_path
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
@@ -31,7 +29,15 @@ def get_chrome_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    return webdriver.Chrome(options=chrome_options)
+    # ✅ Download compatible ChromeDriver into /tmp to avoid PermissionError
+    custom_cache_path = "/tmp/.wdm"
+    os.environ['WDM_LOCAL'] = '1'
+    os.environ['WDM_CACHE_DIR'] = custom_cache_path
+
+    driver_path = ChromeDriverManager(path=custom_cache_path).install()
+    
+    return webdriver.Chrome(service=Service(driver_path), options=chrome_options)
+
 
 # ✅ Scrape interview links
 def fetch_interview_links(company: str, role: str, pages: int = 1):
