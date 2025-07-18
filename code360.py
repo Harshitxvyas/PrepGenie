@@ -12,23 +12,27 @@ from webdriver_manager.chrome import ChromeDriverManager
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ✅ Chromium-compatible headless driver
+import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+import shutil
 
 def get_chrome_driver():
+    # ✅ Automatically install compatible driver
+    chromedriver_autoinstaller.install()
+
     chrome_options = Options()
-    chrome_options.binary_location = "/usr/bin/chromium"
+    chrome_path = shutil.which("chromium")  # dynamically resolve path
+    chrome_options.binary_location = chrome_path
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    return webdriver.Chrome(
-        service=Service("/usr/lib/chromium/chromedriver"),  # ✅ updated correct path
-        options=chrome_options
-    )
+    return webdriver.Chrome(options=chrome_options)
+
 # ✅ Scrape interview links
 def fetch_interview_links(company: str, role: str, pages: int = 1):
     base_url = "https://www.codingninjas.com/studio/experiences"
