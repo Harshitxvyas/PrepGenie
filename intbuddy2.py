@@ -48,12 +48,18 @@ def load_vectorstore(company: str, role: str, pages: int):
     return vectorstore, df, structured
 
 # 🎯 Page Title
-st.title("🤖Intbuddy - A Rag based Interview preparation helper Chatbot")
+st.markdown("""
+    <div style="text-align: center;">
+        <h1 style="margin-bottom: 0.2rem; font-size: 3 rem;">PrepGenie</h1>
+        <p style="color: gray; font-size: 1.4rem;">A RAG-based chatbot for interview preparation</p>
+    </div>
+""", unsafe_allow_html=True)
+
 
 
 
 with st.sidebar:
-    st.title("About IntBuddy")
+    st.title("About PrepGenie")
     st.markdown("""
 **What This App Does**
 
@@ -67,12 +73,12 @@ with st.sidebar:
 2. Choose the number of pages to scrape.
    - Each page contains approximately 5–6 interview experiences.
    - More pages = more information, but longer scraping time.
-
+   - Scrapping 3 pages nearly takes 2 minutes
 **Prompts You Can Ask**
 
 - Provide me brief summary of interview round 1
-- Give me topic-wise percentage distribution
-- What are the major mistakes that should be avoided during interview
+- Give me topic-wise percentage distribution of questions asked in round 2
+- Major mistakes that should be avoided during interview
 - Tips for interview rounds
 - Number of rounds
 
