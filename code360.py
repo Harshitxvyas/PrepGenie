@@ -18,7 +18,7 @@ from selenium.webdriver.chrome.options import Options
 
 def get_chrome_driver():
     chrome_options = Options()
-    chrome_options.binary_location = "/usr/bin/chromium-browser"  # ✅ Path used by Streamlit Cloud
+    chrome_options.binary_location = "/usr/bin/chromium"
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -26,10 +26,9 @@ def get_chrome_driver():
     chrome_options.add_argument("--window-size=1920x1080")
 
     return webdriver.Chrome(
-        service=Service("/usr/bin/chromedriver"),  # ✅ Matches Streamlit Cloud's driver path
+        service=Service("/usr/lib/chromium/chromedriver"),  # ✅ updated correct path
         options=chrome_options
     )
-
 # ✅ Scrape interview links
 def fetch_interview_links(company: str, role: str, pages: int = 1):
     base_url = "https://www.codingninjas.com/studio/experiences"
