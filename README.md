@@ -25,7 +25,7 @@
 
 ## Tech Stack
 
-- **Frontend:** Streamlit (local)
+- **Frontend:** Streamlit 
 - **Backend:** Python, LangChain
 - **LLM:** gemini-2.0-flash
 - **Vector Store:** FAISS
