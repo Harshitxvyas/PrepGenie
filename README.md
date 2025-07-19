@@ -9,9 +9,6 @@
 - **Custom Interview Q&A Chatbot**  
   Answer queries related to specific companies and job roles using context-aware responses.
 
-- **Document-Aware Intelligence**  
-  Supports PDF uploads to provide responses based on your personalized content (e.g., job descriptions, prep guides).
-
 - **Automated Data Collection**  
   Uses Selenium to scrape fresh interview experiences from online platforms and integrates the raw data into the chatbot system.
 
@@ -30,13 +27,10 @@
 
 - **Frontend:** Streamlit (local)
 - **Backend:** Python, LangChain
-- **LLM:** Gemini Pro or HuggingFace models
+- **LLM:** gemini-2.0-flash
 - **Vector Store:** FAISS
-- **Document Parsing:** PyMuPDF, pdfminer
 - **Web Scraping:** Selenium
 - **PDF Export:** WeasyPrint
 
 ---
-
-## Folder Structure
 
